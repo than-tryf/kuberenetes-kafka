@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  serviceName: kafka-headless
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+  updateStrategy:
+  volumeClaimTemplates:
