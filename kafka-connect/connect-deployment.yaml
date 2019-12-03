@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-connect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-connect
+  template:
+    metadata:
+      labels:
+        app: kafka-connect
+    spec:
+      containers:
+      - name: kafka-connect
+        image: confluentinc/cp-kafka-connect:5.3.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: kafka-connect
+          containerPort: 8083
+        env:
+        - name: CONNECT_REST_ADVERTISED_HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: CONNECT_BOOTSTRAP_SERVERS
+          value: "kafka-headless.enedi-infra.svc.cluster.local:9092"
+        - name: CONNECT_REST_PORT
+          value: "8083"
+        - name: CONNECT_GROUP_ID
+          value: "compose-connect-group"
+        - name: CONNECT_CONFIG_STORAGE_TOPIC
+          value: "docker-connect-configs"
+        - name: CONNECT_OFFSET_STORAGE_TOPIC
+          value: "docker-connect-offsets"
+        - name: CONNECT_STATUS_STORAGE_TOPIC
+          value: "docker-connect-status"
+        - name: CONNECT_KEY_CONVERTER
+          value: "org.apache.kafka.connect.storage.StringConverter"
+        - name: CONNECT_VALUE_CONVERTER
+          value: "io.confluent.connect.avro.AvroConverter"
+        - name: CONNECT_INTERNAL_KEY_CONVERTER
+          value: "org.apache.kafka.connect.json.JsonConverter"
+        - name: CONNECT_INTERNAL_VALUE_CONVERTER
+          value: "org.apache.kafka.connect.json.JsonConverter"
+        - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+          value: "schema-registry-service.enedi-infra.svc.cluster.local:8081"
+        - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+          value: "1"
+        - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+          value: "1"
+        - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+          value: "1"
