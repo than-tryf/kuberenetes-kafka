@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: KSQL_BOOTSTRAP_SERVERS
-          value: "kafka-headless.enedi-infra.svc.cluster.local:9092"
+          value: "PLAINTEXT://kafka-0.kafka-headless.enedi-infra.svc.cluster.local:9092"
         - name: KSQL_LISTENERS
           value: "http://0.0.0.0:8088"
         - name: KSQL_PRODUCER_INTERCEPTOR_CLASSES

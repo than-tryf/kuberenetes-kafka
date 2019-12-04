@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: control-center-external
+spec:
+  type: NodePort
+  selector:
+    app: control-center
+  ports:
+  - name: control-center-external
+    port: 9021
+    nodePort: 31091
+    targetPort: 9021
+    protocol: TCP
