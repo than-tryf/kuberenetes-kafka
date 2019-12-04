@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksql-server
+  template:
+    metadata:
+      labels:
+        app: ksql-server
+    spec:
+      containers:
+      - name: ksql-server
+        image: confluentinc/cp-ksql-server:5.3.1
+        ports:
+        - name: ksql-server
+          containerPort: 8088
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KSQL_BOOTSTRAP_SERVERS
+          value: "kafka-headless.enedi-infra.svc.cluster.local:9092"
+        - name: KSQL_LISTENERS
+          value: "http://0.0.0.0:8088"
+        - name: KSQL_PRODUCER_INTERCEPTOR_CLASSES
+          value: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+        - name: KSQL_CONSUMER_INTERCEPTOR_CLASSES
+          value: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+        - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+          value: "schema-registry-service.enedi-infra.svc.cluster.local:8081"
+        - name: KSQL_KSQL_SERVICE_ID
+          value: "ksql_server"
